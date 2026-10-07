@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Painel da loja · Intense Moda</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0c0c0c"><link rel="icon" href="/assets/favicon.svg"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/refinement.css"><link rel="stylesheet" href="/admin.css"><script src="/admin.js" defer></script></head>
+<body>
+<header class="header"><a class="brand" href="/"><span class="brand-name">Intense<span class="brand-star">✧</span></span><span class="brand-sub">MODA</span></a><div class="panel-header-links"><span class="private-label">Painel privado</span><button class="text-button" id="logout" type="button">Sair</button><a class="button outline" href="/" target="_blank" rel="noopener">Ver loja</a></div></header>
+<main class="container admin-main">
+<div class="panel-heading"><div><span class="eyebrow">INTENSE MODA · GESTÃO</span><h1>Catálogo da loja</h1><p class="muted">Cadastre e revise suas roupas. Depois, publique as alterações na loja.</p></div></div>
+<p id="access-message" role="status">Verificando acesso…</p><button class="button outline" id="retry-load" type="button" hidden>Tentar novamente</button>
+<div id="admin-content" hidden>
+<section class="publish-bar" aria-label="Publicação do catálogo"><div><strong id="publication-label">Carregando catálogo…</strong><p id="publication-detail"></p></div><button class="button gold" id="open-publish" type="button" disabled>Publicar alterações</button></section>
+<p id="publication-status" role="status" aria-live="polite"></p>
+<div class="catalog-summary" aria-label="Resumo das roupas cadastradas"><div><span>Total de peças</span><strong id="total-count">0</strong></div><div><span>Feminino</span><strong id="female-count">0</strong></div><div><span>Masculino</span><strong id="male-count">0</strong></div><div><span>Infantil</span><strong id="child-count">0</strong></div></div>
+<div class="admin-layout">
+<section class="editor"><div class="editor-heading"><h2 id="editor-title">Adicionar roupa</h2><span class="draft-label">Rascunho</span></div><form id="editor-form"><input type="hidden" id="edit-id">
+<label for="name">Nome da roupa</label><input id="name" required maxlength="100" placeholder="Ex.: Vestido midi">
+<label for="description">Descrição da roupa</label><textarea id="description" rows="4" maxlength="2000" placeholder="Descreva tecido, caimento, detalhes e cuidados com a peça."></textarea><div class="form-row"><div><label for="price">Preço (R$)</label><input id="price" inputmode="decimal" required placeholder="89,90" maxlength="14"></div><div><label for="category">Categoria</label><select id="category"><option>Feminino</option><option>Masculino</option><option>Infantil</option></select></div></div>
+<label for="color">Cor</label><input id="color" required maxlength="60" placeholder="Ex.: Preto">
+<fieldset><legend>Tamanhos disponíveis</legend><div class="admin-sizes" id="size-options"></div><p class="size-hint" id="sizes-help">Selecione os tamanhos que você tem para esta peça.</p></fieldset>
+<label for="photo">Foto da roupa</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" aria-describedby="photo-help"><p class="size-hint" id="photo-help">Escolha uma foto do celular, com boa iluminação. Se uma foto HEIC não abrir, exporte como JPG.</p><img id="photo-preview" class="photo-preview" alt="Prévia da foto escolhida" hidden>
+<p id="form-status" role="status" aria-live="polite"></p><button class="button gold full" id="save-product" type="submit">Salvar rascunho</button><button class="text-button" type="button" id="cancel-edit" hidden>Cancelar edição</button>
+</form></section>
+<section class="inventory"><div class="inventory-head"><div><h2>Roupas cadastradas</h2><p class="muted">Esta é a versão que será publicada.</p></div><span id="inventory-count"></span></div><div id="inventory-empty"><h3>Seu catálogo começa aqui</h3><p>Adicione a primeira roupa com foto, preço e tamanhos. Ao publicar, ela substituirá os exemplos da loja.</p></div><div id="inventory-list"></div></section>
+</div></div></main>
+<dialog id="delete-dialog" aria-labelledby="delete-title" class="panel-dialog"><h2 id="delete-title">Remover esta roupa?</h2><p>A peça será removida do rascunho. A loja só muda quando você publicar.</p><div class="dialog-actions"><button class="button outline" id="cancel-delete" type="button">Manter roupa</button><button class="button dark" id="confirm-delete" type="button">Remover do rascunho</button></div><p id="delete-status" role="status"></p></dialog>
+<dialog id="publish-dialog" aria-labelledby="publish-title" class="panel-dialog"><span class="eyebrow">ATUALIZAR A LOJA</span><h2 id="publish-title">Publicar o catálogo?</h2><p id="publish-summary"></p><p class="muted">Quem abrir ou recarregar a loja verá as fotos, os preços e os tamanhos desta versão.</p><div class="dialog-actions"><button class="button outline" id="cancel-publish" type="button">Revisar primeiro</button><button class="button gold" id="confirm-publish" type="button">Confirmar publicação</button></div><p id="publish-status" role="status" aria-live="polite"></p></dialog>
+</body></html>
