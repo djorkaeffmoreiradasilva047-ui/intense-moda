@@ -60,15 +60,22 @@ $('#product-form').addEventListener('submit',event=>{
   renderCart();$('#product-dialog').close();notify(`${currentProduct.name} · ${size} adicionada à sacola`);
 });
 $('#payment-method').addEventListener('change',()=>{const credit=$('#payment-method').value==='Cartão de crédito';$('#installments-field').hidden=!credit;$('#payment-installments').disabled=!credit;if(!credit)$('#payment-installments').value='1';});
+const deliveryMethod=$('#delivery-method'),shippingFields=$('#shipping-fields'),shippingCep=$('#shipping-cep'),shippingAddress=$('#shipping-address');
+if(deliveryMethod){deliveryMethod.addEventListener('change',()=>{const shipping=deliveryMethod.value==='Envio pelos Correios';shippingFields.hidden=!shipping;shippingCep.required=shipping;shippingAddress.required=shipping;});}
 $('#order-form').addEventListener('submit',event=>{
   event.preventDefault();if(!cart.length)return;
   const data=new FormData(event.target);const name=String(data.get('name')).trim();const phone=String(data.get('phone')).trim();
   if(!name||phone.replace(/\D/g,'').length<10){notify('Confira seu nome e WhatsApp.');return;}
+  const delivery=String(data.get('delivery')||'');
+  if(!['Retirada na loja','Envio pelos Correios'].includes(delivery)){notify('Escolha como deseja receber o pedido.');return;}
+  const cep=String(data.get('cep')||'').trim(),address=String(data.get('address')||'').trim();
+  if(delivery==='Envio pelos Correios'&&(cep.replace(/\D/g,'').length!==8||!address)){notify('Informe o CEP e o endereço completo para envio pelos Correios.');return;}
   const payment=String(data.get('payment')||'');const installments=Number(data.get('installments')||1);
   if(!['Pix','Cartão de débito','Cartão de crédito'].includes(payment)||!Number.isInteger(installments)||installments<1||installments>6){notify('Confira a forma de pagamento.');return;}
   const paymentSummary=payment==='Cartão de crédito'?`${payment} · ${installments===1?'à vista':installments+' vezes'} (juros e valores a confirmar com a loja)`:payment;
   const lines=cart.map(line=>{const p=PRODUCTS.find(p=>p.id===line.id);return `${line.quantity}x ${p.name} (${p.color})\nTamanho: ${line.size} · Unitário: ${money(p.price)} · Total: ${money(p.price*line.quantity)}`;});
-  lastOrder=['Olá, Intense Moda! Gostaria de consultar este pedido.',...(illustrative?['PRÉVIA — produtos e valores ilustrativos.']:[]),'',...lines,'',`Subtotal dos produtos: ${money(total())}`,`Forma de pagamento escolhida: ${paymentSummary}`,'Retirada na loja. Não fazemos entrega.','Condições de pagamento e horário de retirada: a confirmar com a loja.','',`Nome: ${name}`,`WhatsApp: ${phone}`,'','Aguardo a confirmação de produtos, tamanhos, valores e disponibilidade.'].join('\n');
+  const deliveryLines=delivery==='Envio pelos Correios'?[`Recebimento: ${delivery}`,`CEP: ${cep}`,`Endereço: ${address}`,'Frete e prazo: a confirmar com a loja antes do pagamento.']:[`Recebimento: ${delivery}`,'Horário de retirada: a confirmar com a loja.'];
+  lastOrder=['Olá, Intense Moda! Gostaria de consultar este pedido.',...(illustrative?['PRÉVIA — produtos e valores ilustrativos.']:[]),'',...lines,'',`Subtotal dos produtos: ${money(total())}`,`Forma de pagamento escolhida: ${paymentSummary}`,...deliveryLines,'',`Nome: ${name}`,`WhatsApp: ${phone}`,'','Aguardo a confirmação de produtos, tamanhos, valores, disponibilidade e condições do pedido.'].join('\n');
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(lastOrder)}`,'_blank','noopener');
   $('#order-status').hidden=false;
 });
@@ -101,7 +108,6 @@ async function loadCatalog(){
 }
 $('.preview-note').hidden=true;$('.small-note').textContent='';
 loadCatalog();
-// Check at most once per minute while the customer is active, to limit usage.
 let lastActivity=Date.now();
 for(const name of ['pointerdown','keydown','scroll'])window.addEventListener(name,()=>{lastActivity=Date.now();},{passive:true});
 setInterval(()=>{if(!document.hidden&&Date.now()-lastActivity<5*60*1000)loadCatalog();},60000);
